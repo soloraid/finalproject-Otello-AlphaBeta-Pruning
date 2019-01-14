@@ -1,26 +1,48 @@
 #include <stdio.h>
-void detect(char boardgameptr[][8],int argc);
-
-
+void detect( char boardGame[][8] , int argc , int selection[][2] );
+void alphaBetaPruning( int selection[][2] , int depth , int nextMove[][2] , int score[][8]  );
 
 int main(int argc, char const *argv[])
 {   
-    char boardgame[argc][argc],*boardgameptr[argc-2];
-    //printf("%d\n",argc);
-    for(int i = 0 ; i<argc-2 ; i++){
-        for(int j = 0 ; j<argc-2 ; j++){
-            boardgame[i][j]=argv[i+1][j];
-            //printf("%3c",boardgame[i][j]);
+    char boardGame[argc][argc];
+    int selection[30][2] ;
+    int nextMove[1][2];
+    int depth = 5;
+    int score[8][8]={
+        {9,0,8,5,5,8,0,9},
+        {0,1,5,6,6,5,1,0},
+        {8,5,3,4,4,3,5,8},
+        {5,6,4,0,0,4,6,5},
+        {5,6,4,0,0,4,6,5},
+        {8,5,3,4,4,3,5,8},
+        {0,1,5,6,6,5,1,0},
+        {9,0,8,5,5,8,0,9},
+    };
+
+    for(int i = 0 ; i<argc-2 ; i++)
+    {
+        for(int j = 0 ; j<argc-2 ; j++)
+        {
+            boardGame[i][j]=argv[i+1][j];
         }
-        //printf("\n");
     }
-    detect(boardgame,argc-2);
+    detect( boardGame , argc-2 , selection );
     return 0;
 }
 
 
-void detect(char boardgameptr[][8],int argc)
+/*void detect(char boardgameptr[][8],int argc)
 {
-    
+    char *rowptr;
+    rowptr = (char *)calloc(argc,sizeof(char));
+
+}*/
+
+void alphaBetaPruning( int selection[][2] , int depth , int nextMove[][2] , int score[][8] )
+{
+    if ( depth!=0 )
+    {
+        
+    }
 }
 
