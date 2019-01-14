@@ -1,11 +1,13 @@
 #include <stdio.h>
 void detect( char boardGame[][8] , int argc , int selection[][2] );
-void alphaBetaPruning( int selection[][2] , int depth , int nextMove[][2] , int score[][8]  );
+void alphaBetaPruning( char boardGame[][8] , int selection[][2] , int depth , int nextMove[][2] ,
+ int score[][8] , char player , int max );
+void newBoardGame( char boardGame[][8] );
 
 int main(int argc, char const *argv[])
 {   
     char boardGame[argc][argc];
-    int selection[30][2] ;
+    int selection[30][2];
     int nextMove[1][2];
     int depth = 5;
     int score[8][8]={
@@ -38,11 +40,21 @@ int main(int argc, char const *argv[])
 
 }*/
 
-void alphaBetaPruning( int selection[][2] , int depth , int nextMove[][2] , int score[][8] )
-{
+void alphaBetaPruning( char boardGame[][8] , int selection[][2] , int depth , int nextMove[][2] , int score[][8] , char player , int max );
+{   
+    int counterA=0;
+    int counterB=0;
+    
     if ( depth!=0 )
     {
-        
+        for(int  i = 0 ; i<30 ; i++ )
+        {
+            if( selection[i][0]==-1 )
+            break;
+            boardGame[selection[i][0]][selection[i][1]] = player ;
+            newBoardGame(boardGame);
+
+        }
     }
 }
 
