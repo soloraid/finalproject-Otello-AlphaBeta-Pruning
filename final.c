@@ -3,7 +3,7 @@ void detect( char boardGame[][8] , int argc , int selection[][2] , char player )
 void alphaBetaPruning( char boardGame[][8] , int selection[][2] , int depth , int nextMove[][2] ,
 int score[][8] , char player , int *alphaPtr , int *betaPtr );
 void newBoardGame( char boardGame[][8] , char player);
-
+void checkAlphaBeta( int *alphaPtr , int *betaPtr , char player , char boardGame[][8] , int score[][8] );
 int main(int argc, char const *argv[])
 {   
     char boardGame[argc][argc];
@@ -46,8 +46,6 @@ int main(int argc, char const *argv[])
 
 void alphaBetaPruning( char boardGame[][8] , int selection[][2] , int depth , int nextMove[][2] , int score[][8] , char player , int *alphaPtr , int *betaPtr )
 {   
-    int counterA=0;
-    int counterB=0;
 	int tmpBoard[8][8];
 	int tmpselect[30][2];
 	
@@ -73,18 +71,21 @@ void alphaBetaPruning( char boardGame[][8] , int selection[][2] , int depth , in
             break;
             tmpBoard[selection[i][0]][selection[i][1]] = player ;
             newBoardGame( tmpBoard , player);
+            checkAlphaBeta( alphaPtr , betaPtr ,player , tmpBoard , score );
             //change player
             if ( player == '1')
             	player = '2';
             else
             	player = '1';
-			checkAlphaBeta(alphaPtr,betaPtr)
 
         }
     }
 }
 
-{
+void checkAlphaBeta( int *alphaPtr , int *betaPtr , char player , char boardGame[][8] , int score[][8] )
+{   
+    int counterA=0;
+    int counterB=0;
     for(int k = 0 ; k<8 ; k++)
     {
         for(int q = 0 ; q<8 ; q++)
@@ -97,9 +98,11 @@ void alphaBetaPruning( char boardGame[][8] , int selection[][2] , int depth , in
         	    continue ;
         }
     }
-    if( counterA >= *alphaPtr)
+    if( counterA >= *alphaPtr && player=='1')
         *alphaPtr = counterA ;
-    if( counterB <= *betaPtr)
+    else if( counterB <= *betaPtr && player=='2')
         *betaPtr = counterB ;
+    else
+        return ;
               
 }
