@@ -62,14 +62,11 @@ int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
         for(int  i = 0 ; i<30 ; i++ )
         {
             if( tmpselect[i][0]==-1 )
-                return scoree ( player, tmpBoard , score );
+                return scoree ( '2' , tmpBoard , score );
             newBoardGame( tmpBoard , player , tmpBoard[i][0] , tmpBoard[i][1] );
             detect( tmpBoard , tmpselect , player );
             //change player
-            if(player=='1')
-                player = '2';
-            else
-                player = '1';
+            player = '2';
             hold = minValue( tmpBoard , tmpselect , nextMove , score , depth-- , player , alphaPtr , betaPtr , ratingIndex );
             if( hold > *ratingIndex )
                 *ratingIndex = hold ;
@@ -80,7 +77,7 @@ int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
             return hold ;
         }
     }
-    return scoree( player , boardGame , score );
+    return scoree( '2' , boardGame , score );
 }
 
 int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex )
@@ -108,14 +105,11 @@ int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
         for(int  i = 0 ; i<30 ; i++ )
         {
             if( tmpselect[i][0]==-1 )
-                return scoree ( player, tmpBoard , score );
+                return scoree ( '1' , tmpBoard , score );
             newBoardGame( tmpBoard , player , tmpBoard[i][0] , tmpBoard[i][1] );
             detect( tmpBoard , tmpselect , player );
             //change player
-            if(player=='1')
-                player = '2';
-            else
-                player = '1';
+            player = '1';
             hold = maxValue( tmpBoard , tmpselect , nextMove , score , depth-- , player , alphaPtr , betaPtr , ratingIndex );
             if( hold < *ratingIndex )
                 *ratingIndex = hold ;
@@ -126,7 +120,7 @@ int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
             return hold ;
         }
     }
-    return scoree( player , boardGame , score );
+    return scoree( '1' , boardGame , score );
 }
 
 
