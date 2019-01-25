@@ -1,15 +1,16 @@
 #include <stdio.h>
-void detect( char boardGame[][8] , int argc , int selection[][2] , char player );
-void alphaBetaPruning( char boardGame[][8] , int selection[][2] , int depth , int nextMove[][2] ,
-int score[][8] , char player , int *alphaPtr , int *betaPtr );
-void newBoardGame( char boardGame[][8] , char player);
-void checkAlphaBeta( int *alphaPtr , int *betaPtr , char player , char boardGame[][8] , int score[][8] );
+void detect( char boardGame[][8] , int selection[][2] , char player );
+int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex );
+int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex );
+void newBoardGame( char boardGame[][8] , char player , int x , int y);
+int scoree( char player , char boardGame[][8] , int score[][8] );
+
 int main(int argc, char const *argv[])
 {   
     char boardGame[argc][argc];
     int selection[30][2];
     int nextMove[1][2];
-    int *alphaPtr , *betaPtr ;
+    int *alphaPtr , *betaPtr , *ratingIndex ;
     int depth = 5;
     char player = '1' ;
     int score[8][8]={
@@ -22,8 +23,8 @@ int main(int argc, char const *argv[])
         {0,1,5,6,6,5,1,0},
         {9,0,8,5,5,8,0,9},
     };
-    *alphaPtr = 0;
-    *betaPtr = 576;
+    *alphaPtr = -1;
+    *betaPtr = 276;
 
     for(int i = 0 ; i<argc-2 ; i++)
     {
@@ -32,23 +33,16 @@ int main(int argc, char const *argv[])
             boardGame[i][j]=argv[i+1][j];
         }
     }
-    detect( boardGame , argc-2 , selection , player );
+    detect( boardGame , selection , player );
     return 0;
 }
 
-
-/*void detect(char boardgameptr[][8],int argc)
-{
-    char *rowptr;
-    rowptr = (char *)calloc(argc,sizeof(char));
-
-}*/
-
-void alphaBetaPruning( char boardGame[][8] , int selection[][2] , int depth , int nextMove[][2] , int score[][8] , char player , int *alphaPtr , int *betaPtr )
+int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex )
 {   
 	int tmpBoard[8][8];
 	int tmpselect[30][2];
-	
+    int hold;
+	*ratingIndex = -100000;
 	for (int i = 0 ; i<8 ; i++)
 	{
 		for ( int j = 0 ; j<8 ; j++)
@@ -67,22 +61,76 @@ void alphaBetaPruning( char boardGame[][8] , int selection[][2] , int depth , in
     {
         for(int  i = 0 ; i<30 ; i++ )
         {
-            if( selection[i][0]==-1 )
-            break;
-            tmpBoard[selection[i][0]][selection[i][1]] = player ;
-            newBoardGame( tmpBoard , player);
-            checkAlphaBeta( alphaPtr , betaPtr ,player , tmpBoard , score );
+            if( tmpselect[i][0]==-1 )
+                return;
+            newBoardGame( tmpBoard , player , tmpBoard[i][0] , tmpBoard[i][1] );
+            detect( tmpBoard , tmpselect , player );
             //change player
-            if ( player == '1')
-            	player = '2';
+            if(player=='1')
+                player = '2';
             else
-            	player = '1';
-
+                player = '1';
+            hold = minValue( tmpBoard , tmpselect , nextMove , score , depth-- , player , alphaPtr , betaPtr , ratingIndex );
+            if( hold > *ratingIndex )
+                *ratingIndex = hold ;
+            if( hold >= *betaPtr)
+                return hold;
+            if( hold > *alphaPtr )
+                *alphaPtr = hold ;
+            return hold ;
         }
     }
+    return scoree( player , boardGame , score );
 }
 
-void checkAlphaBeta( int *alphaPtr , int *betaPtr , char player , char boardGame[][8] , int score[][8] )
+int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex )
+{   
+	int tmpBoard[8][8];
+	int tmpselect[30][2];
+    int hold;
+	*ratingIndex = +100000;
+	for (int i = 0 ; i<8 ; i++)
+	{
+		for ( int j = 0 ; j<8 ; j++)
+		{
+			tmpBoard[i][j] = boardGame[i][j];
+		}
+	}
+
+	for(int i = 0 ; i<30 ; i++)
+	{
+		tmpselect[i][0] = selection[i][0];
+		tmpselect[i][1] = selection[i][1];
+	}
+
+    if ( depth!=0 )
+    {
+        for(int  i = 0 ; i<30 ; i++ )
+        {
+            if( tmpselect[i][0]==-1 )
+                return;
+            newBoardGame( tmpBoard , player , tmpBoard[i][0] , tmpBoard[i][1] );
+            detect( tmpBoard , tmpselect , player );
+            //change player
+            if(player=='1')
+                player = '2';
+            else
+                player = '1';
+            hold = maxValue( tmpBoard , tmpselect , nextMove , score , depth-- , player , alphaPtr , betaPtr , ratingIndex );
+            if( hold < *ratingIndex )
+                *ratingIndex = hold ;
+            if( hold <= *alphaPtr )
+                return hold;
+            if( hold < *betaPtr )
+                *betaPtr = hold ;
+            return hold ;
+        }
+    }
+    return scoree( player , boardGame , score );
+}
+
+
+int scoree( char player , char boardGame[][8] , int score[][8] )
 {   
     int counterA=0;
     int counterB=0;
@@ -98,11 +146,19 @@ void checkAlphaBeta( int *alphaPtr , int *betaPtr , char player , char boardGame
         	    continue ;
         }
     }
-    if( counterA >= *alphaPtr && player=='1')
-        *alphaPtr = counterA ;
-    else if( counterB <= *betaPtr && player=='2')
-        *betaPtr = counterB ;
+    if( player=='1')
+        return counterA;
     else
-        return ;
+        return counterB;
               
 }
+
+/*void detect( char boardGame[][8] , int selection[][2] , char player );
+{
+
+}*/
+
+/*void newBoardGame( char boardGame[][8] , char player , int x , int y);
+{
+
+}*/
