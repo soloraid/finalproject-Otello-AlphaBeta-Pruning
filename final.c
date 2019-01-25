@@ -14,17 +14,17 @@ int main(int argc, char const *argv[])
     int depth = 5;
     char player = '1' ;
     int score[8][8]={
-        {9,0,8,5,5,8,0,9},
-        {0,1,5,6,6,5,1,0},
+        {9,1,8,5,5,8,1,9},
+        {1,1,5,6,6,5,1,1},
         {8,5,3,4,4,3,5,8},
-        {5,6,4,0,0,4,6,5},
-        {5,6,4,0,0,4,6,5},
+        {5,6,4,1,1,4,6,5},
+        {5,6,4,1,1,4,6,5},
         {8,5,3,4,4,3,5,8},
-        {0,1,5,6,6,5,1,0},
-        {9,0,8,5,5,8,0,9},
+        {1,1,5,6,6,5,1,1},
+        {9,1,8,5,5,8,1,9},
     };
     *alphaPtr = -1;
-    *betaPtr = 276;
+    *betaPtr = 400;
 
     for(int i = 0 ; i<argc-2 ; i++)
     {
@@ -62,7 +62,7 @@ int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
         for(int  i = 0 ; i<30 ; i++ )
         {
             if( tmpselect[i][0]==-1 )
-                return;
+                return scoree ( player, tmpBoard , score );
             newBoardGame( tmpBoard , player , tmpBoard[i][0] , tmpBoard[i][1] );
             detect( tmpBoard , tmpselect , player );
             //change player
@@ -108,7 +108,7 @@ int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
         for(int  i = 0 ; i<30 ; i++ )
         {
             if( tmpselect[i][0]==-1 )
-                return;
+                return scoree ( player, tmpBoard , score );
             newBoardGame( tmpBoard , player , tmpBoard[i][0] , tmpBoard[i][1] );
             detect( tmpBoard , tmpselect , player );
             //change player
