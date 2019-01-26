@@ -132,3 +132,8 @@ int heuristic_value ( char boardGame[][8], int score[][8] )
 
     return heuristic_value;//return the score_value of the difference max and min players
 }
+
+/*int alphaBetaPruning( char boardGame[][8] , int depth , int nextMove[] , int score[][8] , char player , int alpha , int beta, int is_max_node)
+{
+    code
+}*/
