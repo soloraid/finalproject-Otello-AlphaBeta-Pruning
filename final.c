@@ -41,7 +41,7 @@ int main(int argc, char const *argv[])
 int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex )
 {   
     int a = *alphaPtr , b = *betaPtr ;
-	int tmpBoard[8][8];
+	char tmpBoard[8][8];
 	int tmpselect[30][2];
     int hold;
     int max=-1;
@@ -94,7 +94,7 @@ int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
 int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex )
 {   
     int a = *alphaPtr , b = *betaPtr ;
-	int tmpBoard[8][8];
+	char tmpBoard[8][8];
 	int tmpselect[30][2];
     int hold;
 	*ratingIndex = +100000;
