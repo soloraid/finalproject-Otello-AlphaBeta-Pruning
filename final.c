@@ -12,7 +12,7 @@ int main(int argc, char const *argv[])
     int nextMove[1][2];
     int *alphaPtr , *betaPtr , *ratingIndex ;
     int depth = 5;
-    char player = '1' ;
+    char player = argv[9][0] ;
     int score[8][8]={
         {9,1,8,5,5,8,1,9},
         {1,1,5,6,6,5,1,1},
@@ -34,6 +34,7 @@ int main(int argc, char const *argv[])
         }
     }
     detect( boardGame , selection , player );
+    maxValue( boardGame , selection , nextMove , score , depth , player , alphaPtr , betaPtr , ratingIndex );
     return 0;
 }
 
@@ -75,11 +76,12 @@ int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
                 *ratingIndex = hold ;
             if( hold > *alphaPtr )
                 *alphaPtr = hold ;
+            //choosing best coordination after calculationg each branches
             if( max < *ratingIndex && depth==5 )
             {
                 max = *ratingIndex ;
-                nextMove[0][1]=selection[i][0];
-                nextMove[1][1]=selection[i][1];
+                nextMove[0][0]=selection[i][0];
+                nextMove[0][1]=selection[i][1];
             }
         }
         return hold ;
