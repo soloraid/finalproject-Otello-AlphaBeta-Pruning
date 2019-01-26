@@ -68,16 +68,17 @@ int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
             //change player
             player = '2';
             hold = minValue( tmpBoard , tmpselect , nextMove , score , depth-- , player , alphaPtr , betaPtr , ratingIndex );
-            if( hold > *ratingIndex )
-                *ratingIndex = hold ;
             if( hold >= *betaPtr)
                 return hold;
+            if( hold > *ratingIndex )
+                *ratingIndex = hold ;
             if( hold > *alphaPtr )
                 *alphaPtr = hold ;
-            return hold ;
         }
+        return hold ;
     }
     return scoree( '2' , boardGame , score );
+    
 }
 
 int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex )
@@ -111,14 +112,14 @@ int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
             //change player
             player = '1';
             hold = maxValue( tmpBoard , tmpselect , nextMove , score , depth-- , player , alphaPtr , betaPtr , ratingIndex );
-            if( hold < *ratingIndex )
-                *ratingIndex = hold ;
             if( hold <= *alphaPtr )
                 return hold;
+            if( hold < *ratingIndex )
+                *ratingIndex = hold ;
             if( hold < *betaPtr )
                 *betaPtr = hold ;
-            return hold ;
         }
+        return hold ;
     }
     return scoree( '1' , boardGame , score );
 }
