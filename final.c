@@ -40,6 +40,7 @@ int main(int argc, char const *argv[])
 
 int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex )
 {   
+    int a = *alphaPtr , b = *betaPtr ;
 	int tmpBoard[8][8];
 	int tmpselect[30][2];
     int hold;
@@ -64,18 +65,23 @@ int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
         for(int  i = 0 ; i<30 ; i++ )
         {
             if( tmpselect[i][0]==-1 )
-                return scoree ( '2' , tmpBoard , score );
+                return scoree ( '1' , tmpBoard , score );
             newBoardGame( tmpBoard , player , tmpBoard[i][0] , tmpBoard[i][1] );
             detect( tmpBoard , tmpselect , player );
             //change player
             player = '2';
-            hold = minValue( tmpBoard , tmpselect , nextMove , score , depth-- , player , alphaPtr , betaPtr , ratingIndex );
-            if( hold >= *betaPtr)
+            hold = minValue( tmpBoard , tmpselect , nextMove , score , depth-- , player , &a , &b , ratingIndex );
+            if( hold >= *betaPtr )
                 return hold;
             if( hold > *ratingIndex )
                 *ratingIndex = hold ;
             if( hold > *alphaPtr )
-                *alphaPtr = hold ;
+                a = hold ;
+            if( depth== 5)
+            {
+                *alphaPtr = a;
+                *betaPtr = b;
+            }
             //choosing best coordination after calculationg each branches
             if( max < *ratingIndex && depth==5 )
             {
@@ -86,12 +92,13 @@ int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
         }
         return hold ;
     }
-    return scoree( '2' , boardGame , score );
+    return scoree( '1' , boardGame , score );
     
 }
 
 int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex )
 {   
+    int a = *alphaPtr , b = *betaPtr ;
 	int tmpBoard[8][8];
 	int tmpselect[30][2];
     int hold;
@@ -120,13 +127,13 @@ int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
             detect( tmpBoard , tmpselect , player );
             //change player
             player = '1';
-            hold = maxValue( tmpBoard , tmpselect , nextMove , score , depth-- , player , alphaPtr , betaPtr , ratingIndex );
+            hold = maxValue( tmpBoard , tmpselect , nextMove , score , depth-- , player , &a , &b , ratingIndex );
             if( hold <= *alphaPtr )
                 return hold;
             if( hold < *ratingIndex )
                 *ratingIndex = hold ;
             if( hold < *betaPtr )
-                *betaPtr = hold ;
+                b = hold ;
         }
         return hold ;
     }
