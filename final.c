@@ -42,6 +42,7 @@ int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
 	int tmpBoard[8][8];
 	int tmpselect[30][2];
     int hold;
+    int max=-1;
 	*ratingIndex = -100000;
 	for (int i = 0 ; i<8 ; i++)
 	{
@@ -74,6 +75,12 @@ int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
                 *ratingIndex = hold ;
             if( hold > *alphaPtr )
                 *alphaPtr = hold ;
+            if( max < *ratingIndex && depth==5 )
+            {
+                max = *ratingIndex ;
+                nextMove[0][1]=selection[i][0];
+                nextMove[1][1]=selection[i][1];
+            }
         }
         return hold ;
     }
