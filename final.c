@@ -76,12 +76,7 @@ int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
             if( hold > *ratingIndex )
                 *ratingIndex = hold ;
             if( hold > *alphaPtr )
-                a = hold ;
-            if( depth== 5)
-            {
-                *alphaPtr = a;
-                *betaPtr = b;
-            }
+                *alphaPtr = hold ;
             //choosing best coordination after calculationg each branches
             if( max < *ratingIndex && depth==5 )
             {
@@ -133,7 +128,7 @@ int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
             if( hold < *ratingIndex )
                 *ratingIndex = hold ;
             if( hold < *betaPtr )
-                b = hold ;
+                *betaPtr = hold ;
         }
         return hold ;
     }
