@@ -3,7 +3,7 @@ void detect( char boardGame[][8] , int selection[][2] , char player );
 int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex );
 int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex );
 void newBoardGame( char boardGame[][8] , char player , int x , int y);
-int scoree( char player , char boardGame[][8] , int score[][8] );
+int scoree( char boardGame[][8] , int score[][8] );
 
 int main(int argc, char const *argv[])
 {   
@@ -65,7 +65,7 @@ int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
         for(int  i = 0 ; i<30 ; i++ )
         {
             if( tmpselect[i][0]==-1 )
-                return scoree ( '1' , tmpBoard , score );
+                return scoree ( tmpBoard , score );
             newBoardGame( tmpBoard , player , tmpBoard[i][0] , tmpBoard[i][1] );
             detect( tmpBoard , tmpselect , player );
             //change player
@@ -93,7 +93,7 @@ int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
         }
         return hold ;
     }
-    return scoree( '1' , boardGame , score );
+    return scoree( boardGame , score );
     
 }
 
@@ -123,7 +123,7 @@ int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
         for(int  i = 0 ; i<30 ; i++ )
         {
             if( tmpselect[i][0]==-1 )
-                return scoree ( '1' , tmpBoard , score );
+                return scoree ( tmpBoard , score );
             newBoardGame( tmpBoard , player , tmpBoard[i][0] , tmpBoard[i][1] );
             detect( tmpBoard , tmpselect , player );
             //change player
@@ -138,30 +138,24 @@ int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int
         }
         return hold ;
     }
-    return scoree( '1' , boardGame , score );
+    return scoree( boardGame , score );
 }
 
 
-int scoree( char player , char boardGame[][8] , int score[][8] )
+int scoree( char boardGame[][8] , int score[][8] )
 {   
     int counterA=0;
-    int counterB=0;
     for(int k = 0 ; k<8 ; k++)
     {
         for(int q = 0 ; q<8 ; q++)
         {
             if( boardGame[k][q]=='1' )
                 counterA+=score[k][q] ;
-            else if ( boardGame[k][q]=='2')
-                counterB+=score[k][q] ;
             else
         	    continue ;
         }
     }
-    if( player=='1')
         return counterA;
-    else
-        return counterB;
               
 }
 
