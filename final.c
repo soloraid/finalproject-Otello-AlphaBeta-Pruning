@@ -1,170 +1,36 @@
 #include <stdio.h>
-void detect( char boardGame[][8] , int selection[][2] , char player );
-int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex );
-int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex );
-void newBoardGame( char boardGame[][8] , char player , int x , int y);
-int scoree( char boardGame[][8] , int score[][8] );
+#include <stdlib.h>
+#define INF 10000000
+#define max(x, y) (((x) > (y)) ? (x) : (y))
+#define min(x, y) (((x) < (y)) ? (x) : (y))
+//void print_table(char boardGame[][8]); just fot checking 
+int validPoint(int x,int y);
+int change(char boardGame[][8], char tmpBoard[][8], int x, int y, char player);
+int heuristic_value ( char boardGame[][8], int score[][8] );
+int alphaBetaPruning( char boardGame[][8] , int depth , int nextMove[] , int score[][8] , char player , int alpha , int beta, int is_max_node);
 
-int main(int argc, char const *argv[])
-{   
-    char boardGame[argc][argc];
-    int selection[30][2];
-    int nextMove[1][2];
-    int *alphaPtr , *betaPtr , *ratingIndex ;
-    int depth = 5;
-    char player = argv[9][0] ;
-    int score[8][8]={
-        {9,1,8,5,5,8,1,9},
-        {1,1,5,6,6,5,1,1},
-        {8,5,3,4,4,3,5,8},
-        {5,6,4,1,1,4,6,5},
-        {5,6,4,1,1,4,6,5},
-        {8,5,3,4,4,3,5,8},
-        {1,1,5,6,6,5,1,1},
-        {9,1,8,5,5,8,1,9},
-    };
-    *alphaPtr = -1;
-    *betaPtr = 400;
-
-    for(int i = 0 ; i<argc-2 ; i++)
-    {
-        for(int j = 0 ; j<argc-2 ; j++)
-        {
-            boardGame[i][j]=argv[i+1][j];
-        }
-    }
-    detect( boardGame , selection , player );
-    maxValue( boardGame , selection , nextMove , score , depth , player , alphaPtr , betaPtr , ratingIndex );
+/*int int main(int argc, char const *argv[])
+{
+    code 
     return 0;
-}
-
-int maxValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex )
-{   
-    *ratingIndex = -100000;
-    int a = *alphaPtr , b = *betaPtr , r=*ratingIndex ;
-	char tmpBoard[8][8];
-	int tmpselect[30][2];
-    int hold;
-    int max=-1;
-	for (int i = 0 ; i<8 ; i++)
-	{
-		for ( int j = 0 ; j<8 ; j++)
-		{
-			tmpBoard[i][j] = boardGame[i][j];
-		}
-	}
-
-	for(int i = 0 ; i<30 ; i++)
-	{
-		tmpselect[i][0] = selection[i][0];
-		tmpselect[i][1] = selection[i][1];
-	}
-
-    if ( depth!=0 )
-    {
-        for(int  i = 0 ; i<30 ; i++ )
-        {
-            if( tmpselect[i][0]==-1 )
-                return scoree ( tmpBoard , score );
-            newBoardGame( tmpBoard , player , tmpBoard[i][0] , tmpBoard[i][1] );
-            detect( tmpBoard , tmpselect , player );
-            //change player
-            player = '2';
-            hold = minValue( tmpBoard , tmpselect , nextMove , score , depth-- , player , &a , &b , &r );
-            if( hold >= *betaPtr )
-                return hold;
-            if( hold > *ratingIndex )
-                *ratingIndex = hold ;
-            if( hold > *alphaPtr )
-                *alphaPtr = hold ;
-            if(depth==5)
-            {
-                *ratingIndex = r;
-                *alphaPtr = a;
-                *betaPtr = b;
-            }
-            //choosing best coordination after calculationg each branches
-            if( max < *ratingIndex && depth==5 )
-            {
-                max = *ratingIndex ;
-                nextMove[0][0]=selection[i][0];
-                nextMove[0][1]=selection[i][1];
-            }
-        }
-        return hold ;
-    }
-    return scoree( boardGame , score );
-    
-}
-
-int minValue( char boardGame[][8] , int selection[][2] , int nextMove[][2] , int score[][8] , int depth , char player , int *alphaPtr , int *betaPtr , int *ratingIndex )
-{   
-    *ratingIndex = +100000;
-    int a = *alphaPtr , b = *betaPtr , r=*ratingIndex ;
-	char tmpBoard[8][8];
-	int tmpselect[30][2];
-    int hold;
-	for (int i = 0 ; i<8 ; i++)
-	{
-		for ( int j = 0 ; j<8 ; j++)
-		{
-			tmpBoard[i][j] = boardGame[i][j];
-		}
-	}
-
-	for(int i = 0 ; i<30 ; i++)
-	{
-		tmpselect[i][0] = selection[i][0];
-		tmpselect[i][1] = selection[i][1];
-	}
-
-    if ( depth!=0 )
-    {
-        for(int  i = 0 ; i<30 ; i++ )
-        {
-            if( tmpselect[i][0]==-1 )
-                return scoree ( tmpBoard , score );
-            newBoardGame( tmpBoard , player , tmpBoard[i][0] , tmpBoard[i][1] );
-            detect( tmpBoard , tmpselect , player );
-            //change player
-            player = '1';
-            hold = maxValue( tmpBoard , tmpselect , nextMove , score , depth-- , player , &a , &b , &r );
-            if( hold <= *alphaPtr )
-                return hold;
-            if( hold < *ratingIndex )
-                *ratingIndex = hold ;
-            if( hold < *betaPtr )
-                *betaPtr = hold ;
-        }
-        return hold ;
-    }
-    return scoree( boardGame , score );
-}
-
-
-int scoree( char boardGame[][8] , int score[][8] )
-{   
-    int counterA=0;
-    for(int k = 0 ; k<8 ; k++)
-    {
-        for(int q = 0 ; q<8 ; q++)
-        {
-            if( boardGame[k][q]=='1' )
-                counterA+=score[k][q] ;
-            else
-        	    continue ;
-        }
-    }
-        return counterA;
-              
-}
-
-/*void detect( char boardGame[][8] , int selection[][2] , char player );
-{
-
 }*/
 
-/*void newBoardGame( char boardGame[][8] , char player , int x , int y);
+/*void print_table(char boardGame[][8])
 {
-
+    for(int i=0;i<8;i++)
+    {
+        for(int j=0;j<8;j++)
+            printf("%c",boardGame[i][j]);
+        printf("\n");
+    }
+    printf("\n");
+    printf("\n");
 }*/
+
+int validPoint(int x,int y)
+{   
+    // function for checking the coordinates correct or out of boundary
+    if( x<0 || y<0 || x>=8 || y>=8)
+        return 0;//out of boundary
+    return 1;//correct place
+}
