@@ -93,7 +93,7 @@ int change( char boardGame[][8] , char tmpBoard[][8] , int x , int y , char play
             else
                 seenOtherPlayer=1;
         }
-        if(ok)// ok ==1 for changing bead from otherplayer(2) to player(1)
+        if(ok)// ok ==1 for moving through board to change beads
         {
             while( (tmpx+dx)!=x || (tmpy+dy)!=y)
             {   
